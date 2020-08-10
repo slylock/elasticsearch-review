@@ -1,0 +1,149 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "usgovvirginia"
+        },
+        "networkInterfaceName": {
+            "value": "matt-es-2"
+        },
+        "networkSecurityGroupName": {
+            "value": "Matt-ES-2-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                },
+                {
+                    "name": "HTTPS",
+                    "properties": {
+                        "priority": 320,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "443"
+                    }
+                },
+                {
+                    "name": "HTTP",
+                    "properties": {
+                        "priority": 340,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "80"
+                    }
+                }
+            ]
+        },
+        "subnetName": {
+            "value": "default"
+        },
+        "virtualNetworkName": {
+            "value": "Matt-ES-resource-group-vnet"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.0.1.0/24"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "10.0.1.0/24"
+                    }
+                }
+            ]
+        },
+        "publicIpAddressName": {
+            "value": "Matt-ES-2-ipb"
+        },
+        "publicIpAddressType": {
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "value": "Basic"
+        },
+        "virtualMachineName": {
+            "value": "Matt-ES-2"
+        },
+        "virtualMachineRG": {
+            "value": "Matt-ES-resource-group"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "dataDisks": {
+            "value": [
+                {
+                    "lun": 0,
+                    "createOption": "attach",
+                    "caching": "None",
+                    "writeAcceleratorEnabled": false,
+                    "id": null,
+                    "name": "Matt-ES-2_DataDisk_0",
+                    "storageAccountType": null,
+                    "diskSizeGB": null,
+                    "diskEncryptionSet": {
+                        "id": null
+                    }
+                }
+            ]
+        },
+        "dataDiskResources": {
+            "value": [
+                {
+                    "name": "Matt-ES-2_DataDisk_0",
+                    "sku": "Premium_LRS",
+                    "properties": {
+                        "diskSizeGB": 64,
+                        "creationData": {
+                            "createOption": "empty"
+                        }
+                    }
+                }
+            ]
+        },
+        "virtualMachineSize": {
+            "value": "Standard_B2s"
+        },
+        "adminUsername": {
+            "value": "elastic"
+        },
+        "adminPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDHHWlXVYWLUOlPqWQEdqWAwHOCPthxTaqLxNKywQX144IFeSQzhy45k+iUYB1rc/ve4B8iC3dFlNNzPuqFoKadkgMz8/ne9dNW3xyIpjFjO876YOWu2ctrLATpUCggOnETOzLWqGYBKNMs2JLN1Hl8hHlHOfaGJk1oPvz0gQTTIkEZ+qvIEwpsCSb/V3hz24vkxDJFha/aiwRykUhxlIyRJ2fvX1qV4+1HTxC2QVp15Xk2/IWbqV7/4x0ycXsQdMKCOnUa20BUwd7KGFdFo9ntcLSOFcfYDQDAR7PEEwEKjWsMhKEPaSnO7+svPjQ6nhAjo+2y/bPL3xvhghlbyzhAYF4PtLtxnE6hZAIZJ/huGmFIPIAMYqG6v10QEoPXkiQ6AaLmrobRM6A1YNLOkbB/7NV7Ersqkmy7KblOnk5BDRlameUkW1x18aR9qE3fV4w0FTctP2HAyzMahPCqvk81L/xnWR6s1HmlHwIxu2qUzpO3WV89EoVIv+xUyop+/Re+oMOGjAqKrmqx8upnKW7waLDe72pq20waog4eCIGveRmnN/jsjlcA2Jl2ODbzbJ7f32p3XZPLIPB0u+KDzH1mPKJ3Kcx97IUslg29smcQYTEYEIcz3rmt8B8wO+TMRYMKRiVRnfJwb37e6AG9khDOCLkNxd+P/p0lJ2NbnK7+Yw== d-b-matt.snyder@AFSWWTFZSNZCN2"
+        },
+        "diagnosticsStorageAccountName": {
+            "value": "mattesresourcegroupdiag"
+        },
+        "diagnosticsStorageAccountId": {
+            "value": "Microsoft.Storage/storageAccounts/mattesresourcegroupdiag"
+        },
+        "diagnosticsStorageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "diagnosticsStorageAccountKind": {
+            "value": "Storage"
+        }
+    }
+}
