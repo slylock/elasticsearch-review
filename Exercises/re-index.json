@@ -1,0 +1,41 @@
+POST _reindex
+{
+  "source": {
+    "remote": {
+      "host": "https://10.0.1.4:9200",
+      "username": "elastic",
+      "password": "Lsandiego1"
+    },
+    "index": "bank"
+  },
+  "dest": {
+    "index": "bank"
+  }
+}
+
+POST _reindex
+{
+  "source": {
+    "remote": {
+      "host": "https://10.0.1.4:9200",
+      "username": "elastic",
+      "password": "Lsandiego1"
+    },
+    "index": "bank",
+        "query": {
+      "term": {
+        "gender.keyword": {
+          "value": "F"
+        }
+      }
+    }
+
+  },
+  "dest": {
+    "index": "accounts_female"
+  },
+  "script": {
+    "lang": "painless",
+    "source": "ctx._source.remove('gender')"
+  }
+}

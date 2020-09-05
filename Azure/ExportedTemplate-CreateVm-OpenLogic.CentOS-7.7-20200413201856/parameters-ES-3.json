@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "usgovvirginia"
+            "value": "eastus"
         },
         "networkInterfaceName": {
             "value": "matt-ES-3"
@@ -79,7 +79,7 @@
             "value": "Matt-ES-3-ipb"
         },
         "publicIpAddressType": {
-            "value": "Dynamic"
+            "value": "Static"
         },
         "publicIpAddressSku": {
             "value": "Basic"

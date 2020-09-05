@@ -1,0 +1,44 @@
+POST _aliases
+{
+  "actions": [
+    {
+      "add": {
+        "index": "bank",
+        "alias": "sampledata"
+      }
+    },
+        {
+      "add": {
+        "index": "logs",
+        "alias": "sampledata"
+      }
+    },
+        {
+      "add": {
+        "index": "shakespeare",
+        "alias": "sampledata"
+      }
+    }
+  ]
+}
+
+GET sampledata
+
+POST _aliases
+{
+  "actions": [
+    {
+      "add": {
+        "index": "shakespeare",
+        "alias": "henry4",
+        "filter": {
+          "term": {
+            "play_name" : "Henry IV"
+          }
+        }
+      }
+    }
+  ]
+}
+
+GET henry4/_search

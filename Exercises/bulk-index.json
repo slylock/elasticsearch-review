@@ -1,0 +1,45 @@
+GET sample1/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET _cat/indices?v
+
+GET shakespeare
+
+GET sample1
+
+POST sample1/_doc
+{
+  "firstname": "me",
+  "lastname" : "you"
+}
+
+POST sample1/_update/V7bn-HABksErO_vaEBVN
+{
+  "doc": {
+  "firstname": "matt",
+  "lastname" : "foo",
+  "middle": "X"
+}}
+
+POST sample1/_update/V7bn-HABksErO_vaEBVN
+{
+  "script": {
+  "lang": "painless",
+  "source" : "ctx._source.remove('middle')"
+}}
+
+GET sample1/_source/V7bn-HABksErO_vaEBVN
+
+curl -k -u elastic -H "Content-Type: application/x-ndjson" -XPOST https://localhost:9200/shakespeare/_bulk?pretty --data-binary @../sample-data/shakespeare.json > results-shakespeare.json
+
+
+
+GET bank/_search
+GET bank/_source/1
+
+GET shakespeare/_search
+GET logs/_search

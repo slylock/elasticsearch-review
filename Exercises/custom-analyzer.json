@@ -1,0 +1,95 @@
+GET shakespeare
+
+PUT shakespeare_new
+{
+      "aliases" : { },
+    "mappings" : {
+      "properties" : {
+        "line_id" : {
+          "type" : "integer"
+        },
+        "line_number" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "play_name" : {
+          "type" : "keyword"
+        },
+        "speaker" : {
+          "type" : "keyword"
+        },
+        "speech_number" : {
+          "type" : "integer"
+        },
+        "text_entry" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "case_insensitive" : {
+              "type": "text",
+              "analyzer": "custom_standard"
+            }
+          }
+        },
+        "type" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        }
+      }
+    },
+    "settings" : {
+
+      "analysis": {
+      "analyzer": {
+        "custom_standard": {
+          "tokenizer": "standard",
+          "filter": [
+          ]
+        }
+      }
+    }
+    }
+}
+
+DELETE shakespeare_new
+
+POST _reindex
+{
+  "source": {
+    "index": "shakespeare"
+  },
+  "dest": {
+    "index": "shakespeare_new"
+  }
+}
+
+POST shakespeare_new/_analyze
+{
+  "analyzer": "custom_standard",
+  "text": "Death, death; O amiable lovely death"
+}
+
+GET shakespeare_new/_search
+{
+  "query": {
+    "match": {
+      "text_entry.case_insensitive": {
+        "query": "Death, death; O amiable lovely death",
+        "analyzer": "custom_standard"
+      }
+    }
+  }
+}

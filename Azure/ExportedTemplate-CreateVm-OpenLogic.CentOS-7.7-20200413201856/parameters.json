@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "usgovvirginia"
+            "value": "eastus"
         },
         "networkInterfaceName": {
-            "value": "matt-es-1479"
+            "value": "Matt-ES-1b479"
         },
         "networkSecurityGroupName": {
-            "value": "Matt-ES-1-nsg"
+            "value": "Matt-ES-1b-nsg"
         },
         "networkSecurityGroupRules": {
             "value": [
@@ -76,16 +76,16 @@
             ]
         },
         "publicIpAddressName": {
-            "value": "Matt-ES-1-ip"
+            "value": "Matt-ES-1b-ip"
         },
         "publicIpAddressType": {
-            "value": "Dynamic"
+            "value": "Static"
         },
         "publicIpAddressSku": {
             "value": "Basic"
         },
         "virtualMachineName": {
-            "value": "Matt-ES-1"
+            "value": "Matt-ES-1b"
         },
         "virtualMachineRG": {
             "value": "Matt-ES-resource-group"
@@ -101,7 +101,7 @@
                     "caching": "None",
                     "writeAcceleratorEnabled": false,
                     "id": null,
-                    "name": "Matt-ES-1_DataDisk_0",
+                    "name": "Matt-ES-1b_DataDisk_0",
                     "storageAccountType": null,
                     "diskSizeGB": null,
                     "diskEncryptionSet": {
@@ -113,7 +113,7 @@
         "dataDiskResources": {
             "value": [
                 {
-                    "name": "Matt-ES-1_DataDisk_0",
+                    "name": "Matt-ES-1b_DataDisk_0",
                     "sku": "Premium_LRS",
                     "properties": {
                         "diskSizeGB": 64,
@@ -131,7 +131,7 @@
             "value": "elastic"
         },
         "adminPublicKey": {
-            "value": null
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDHHWlXVYWLUOlPqWQEdqWAwHOCPthxTaqLxNKywQX144IFeSQzhy45k+iUYB1rc/ve4B8iC3dFlNNzPuqFoKadkgMz8/ne9dNW3xyIpjFjO876YOWu2ctrLATpUCggOnETOzLWqGYBKNMs2JLN1Hl8hHlHOfaGJk1oPvz0gQTTIkEZ+qvIEwpsCSb/V3hz24vkxDJFha/aiwRykUhxlIyRJ2fvX1qV4+1HTxC2QVp15Xk2/IWbqV7/4x0ycXsQdMKCOnUa20BUwd7KGFdFo9ntcLSOFcfYDQDAR7PEEwEKjWsMhKEPaSnO7+svPjQ6nhAjo+2y/bPL3xvhghlbyzhAYF4PtLtxnE6hZAIZJ/huGmFIPIAMYqG6v10QEoPXkiQ6AaLmrobRM6A1YNLOkbB/7NV7Ersqkmy7KblOnk5BDRlameUkW1x18aR9qE3fV4w0FTctP2HAyzMahPCqvk81L/xnWR6s1HmlHwIxu2qUzpO3WV89EoVIv+xUyop+/Re+oMOGjAqKrmqx8upnKW7waLDe72pq20waog4eCIGveRmnN/jsjlcA2Jl2ODbzbJ7f32p3XZPLIPB0u+KDzH1mPKJ3Kcx97IUslg29smcQYTEYEIcz3rmt8B8wO+TMRYMKRiVRnfJwb37e6AG9khDOCLkNxd+P/p0lJ2NbnK7+Yw== d-b-matt.snyder@AFSWWTFZSNZCN2"
         },
         "diagnosticsStorageAccountName": {
             "value": "mattesresourcegroupdiag"

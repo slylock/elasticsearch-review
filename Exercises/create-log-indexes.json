@@ -1,0 +1,26 @@
+PUT _template/logs
+{
+    "aliases" : {
+      "logs_alias" : { }
+    },
+    "mappings" : {
+      "properties" : {
+        "field1" : {
+          "type" : "keyword"
+        }
+      }
+    },
+    "settings" : {
+        "number_of_shards" : "1",
+        "number_of_replicas" : "1"
+    },
+    "index_patterns": ["logs-*"]
+}
+
+PUT logs-2020-01-01
+PUT logs-2020-01-02
+PUT logs-2020-01-03
+PUT logs-2020-01-04
+PUT logs-2020-01-05
+PUT logs-2020-01-06
+PUT logs-2020-01-07

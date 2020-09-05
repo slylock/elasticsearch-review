@@ -1,0 +1,49 @@
+PUT _ingest/pipeline/test_pipeline
+{
+  "description": "lesson 7",
+  "processors": [
+    {
+      "remove": {
+        "field": "account_number"
+      }
+    },
+    {
+      "set": {
+        "field": "_source.fullname",
+        "value": "{{_source.firstname}} {{_source.lastname}}"
+      }
+    },
+    {
+      "convert": {
+        "field": "age",
+        "type": "string"
+      }
+    },
+    {
+      "script": {
+        "lang": "painless",
+        "source": """
+          if (ctx.gender == "M") {
+            ctx.gender = "male"
+          } else {
+            ctx.gender = "female"
+          }
+        """
+      }
+    }
+  ]
+}
+
+DELETE bank_test
+POST _reindex
+{
+  "source": {
+    "index": "bank"
+  },
+  "dest": {
+    "index": "bank_test",
+    "pipeline": "test_pipeline"
+  }
+}
+
+GET bank_test/_search
