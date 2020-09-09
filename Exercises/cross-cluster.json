@@ -1,0 +1,57 @@
+# On C-2:
+
+POST _reindex
+{
+  "source": {
+    "remote": {
+      "host": "http://10.0.1.8:9200"
+    },
+    "index": "bank",
+        "query": {
+      "term": {
+        "gender.keyword": {
+          "value": "M"
+        }
+      }
+    }
+
+  },
+  "dest": {
+    "index": "accounts_male"
+  },
+  "script": {
+    "lang": "painless",
+    "source": "ctx._source.remove('gender')"
+  }
+}
+
+# On C-1:
+
+
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster": {
+      "remote": {
+        "c2" : {
+          "seeds": ["10.0.1.7:9300"]
+        }
+      }
+    }
+  }
+}
+
+GET bank,c2:accounts_male,c2:accounts_female/_search?size=0
+
+GET _cluster/settings
+
+GET bank,c2:accounts_male/_search
+{
+  "query": {
+    "term": {
+      "firstname.keyword": {
+        "value": "Amber"
+      }
+    }
+  }
+}

@@ -1,0 +1,90 @@
+
+PUT sample-1
+{
+  "settings": {
+    "number_of_replicas": 0,
+    "number_of_shards": 2
+  }
+}
+
+GET _cat/indices?v
+GET _cat/shards/sample-1?v
+
+PUT sample-1/
+{
+  "settings": {
+    "number_of_replicas": 0,
+    "number_of_shards": 1,
+    "index.routing.allocation.exclude._name": "data-1, data-2"
+  }
+}
+DELETE sample-1
+PUT sample-1/
+{
+  "settings": {
+    "number_of_replicas": 10,
+    "number_of_shards": 1
+  }
+}
+GET _cat/nodeattrs?v
+
+GET _cluster/allocation/explain
+
+PUT recent_logs
+{
+  "settings": {
+    "number_of_replicas": 0,
+    "number_of_shards": 1
+  }
+}
+PUT old_logs/_settings
+{
+  "index.routing.allocation.require.temp": "warm"
+}
+
+PUT old_logs
+{
+  "settings": {
+    "number_of_replicas": 0,
+    "number_of_shards": 1,
+    "index.routing.allocation.require.temp": "warm"
+  }
+}
+
+GET _cluster/allocation/explain
+{
+  "index": "recent_logs",
+  "shard": 0,
+  "primary": true
+}
+
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster": {
+      "remote": {
+        "c2" : {
+          "seeds": ["10.0.1.7:9300"]
+        }
+      }
+    }
+  }
+}
+
+GET bank,c2:accounts_male,c2:accounts_female/_search?size=0
+
+# zone allocation exercise
+
+GET _cat/shards/accounts
+
+GET _cat/indices?v
+GET _cat/nodes?v
+GET _cat/nodeattrs?v
+
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.awareness.attributes" : "zone",
+    "cluster.routing.allocation.awareness.force.zone.values" : "1,2"
+  }
+}

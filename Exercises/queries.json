@@ -1,0 +1,94 @@
+GET _search
+{
+  "query": {
+    "match": {
+      "text_entry": "to be or not to be"
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "match_phrase": {
+      "text_entry": "to be or not to be"
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "multi_match": {
+      "query": "crime",
+      "fields": ["text_entry", "relatedContent.og:description"]
+    }
+  },
+  "size": 20
+}
+
+GET _search
+{
+  "query": {
+    "query_string": {
+      "default_field": "text_entry",
+      "query": "(romeo AND juliet) OR (mother AND father)"
+    }
+  },
+  "size": 20
+}
+
+GET _search
+{
+  "query": {
+    "term": {
+      "speaker": {
+        "value": "ROMEO"
+      }
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "terms": {
+      "speaker": [
+        "ROMEO",
+        "JULIET"
+      ]
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "range": {
+      "age": {
+        "gte": 40,
+        "lte": 50
+      }
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "wildcard": {
+      "city.keyword": {
+        "value": "*ville"
+      }
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "regexp": {
+      "email.keyword": ".*@xurban\\.com"
+    }
+  }
+}

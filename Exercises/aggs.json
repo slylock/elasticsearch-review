@@ -1,0 +1,122 @@
+GET logs-new/_search
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "unique_clients": {
+      "cardinality": {
+        "field": "clientip.keyword"
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "sum_bytes": {
+      "sum": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "avg_bytes": {
+      "avg": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "codes": {
+      "terms": {
+        "field": "response.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "req_per_day": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "day"
+      }
+    }
+  }
+}
+
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "extensions": {
+      "terms": {
+        "field": "extension.keyword",
+        "size": 10,
+        "order": {
+          "sum_bytes": "desc"
+        }
+      },
+      "aggs": {
+        "sum_bytes": {
+          "sum": {
+            "field": "bytes"
+          }
+        }
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "extensions": {
+      "terms": {
+        "field": "extension.keyword",
+        "size": 10,
+        "order": {
+          "avg_bytes": "desc"
+        }
+      },
+      "aggs": {
+        "avg_bytes": {
+          "avg": {
+            "field": "bytes"
+          }
+        }
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "hour"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+GET _search
+{
+  "query": {
+    "match": {
+      "text_entry": "life"
+    }
+  },
+  "highlight": {
+    "pre_tags": ["string>"],
+    "post_tags": ["</string>"],
+    "fields": {
+      "text_entry": {}
+    }
+  }
+}
+
+GET bank/_search?size=20&from=20
+{
+  "sort": [
+    {
+      "age": {
+        "order": "desc"
+      }
+    },
+    {
+      "balance": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+GET bank/_search
+{
+  "sort": [
+    {
+      "lastname.keyword": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+GET logs-new/_search?scroll=10m
+{
+  "sort": [
+    {
+      "_doc": {
+        "order": "asc"
+      }
+    }
+  ],
+  "slice": {
+    "id": 0,
+    "max": 2
+  }
+}
+GET logs-new/_search?scroll=10m
+{
+  "sort": [
+    {
+      "_doc": {
+        "order": "asc"
+      }
+    }
+  ],
+  "slice": {
+    "id": 1,
+    "max": 2
+  }
+}
+GET _search/scroll
+{
+  "scroll": "10m",
+  "scroll_id": "DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAPJcWMUhSVnBQYktSbjJQRjBVWW1ORG5lZw=="
+}

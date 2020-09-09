@@ -1,0 +1,45 @@
+GET _search
+{
+  "query": {
+    "match": {
+      "text_entry": {
+        "query": "shame",
+        "fuzziness": 2
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "asc"
+      }
+    }
+  ],
+  "highlight": {
+    "fields": {
+      "text_entry": {}
+    },
+    "pre_tags": ["**"],
+    "post_tags": ["**"]
+  }
+}
+
+GET _search
+{
+  "query": {
+    "fuzzy": {
+      "play_name": {
+        "value": "Teh Tempest",
+        "fuzziness": 1,
+        "transpositions": true
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "asc"
+      }
+    }
+  ]
+}

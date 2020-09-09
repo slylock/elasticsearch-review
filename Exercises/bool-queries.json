@@ -1,0 +1,67 @@
+
+GET _search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {}
+      ],
+      "must_not": [
+        {}
+      ],
+      "should": [
+        {}
+      ]
+    }
+  }
+}
+
+GET _search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": {
+              "_name": "gender",
+              "value": "F"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "state.keyword": {
+              "_name": "state",
+              "value": "RI"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "lastname.keyword": {
+              "_name": "lastname_1",
+              "value": "Meyers"
+            }
+          }},{
+          "term": {
+            "lastname.keyword": {
+              "value": "Owens",
+              "_name": "lastname_2"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1,
+      "filter": {
+        "term": {
+          "city.keyword": "Jacksonburg"
+        }
+      }
+    }
+  }
+}

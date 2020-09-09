@@ -1,0 +1,126 @@
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"term": {
+          "type.keyword": {
+            "value": "scene"
+          }
+        }},
+        {"match": {
+          "text_entry": "london"
+        }},
+        {"terms": {
+          "play_name": [
+            "Henry VI Part 1", "Henry VI Part 2",  "Henry VI Part 3"
+          ]
+        }}
+      ]
+    }
+  },
+  "size": 200,
+  "sort": [
+    {
+      "play_name": {
+        "order": "asc"
+      }
+    },
+    {
+      "line_id": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+GET shakespeare/_search?
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {
+          "text_entry": "death"
+        }}
+      ],
+      "filter": {
+        "term": {
+          "play_name": "Hamlet"
+        }
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    },
+    {
+      "line_id": {
+        "order": "asc"
+      }
+    }
+  ],
+  "highlight": {
+    "fields": {
+      "text_entry": {}
+    },
+    "pre_tags": ["<strong>"],
+    "post_tags": ["</strong>"]
+  },
+  "size": 5,
+  "from": 0
+}
+
+
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": "death"
+    }
+  },
+  "size": 25,
+  "from": 0
+}
+GET shakespeare/_search/template
+{
+  "source": {
+    "query": {
+    "match": {
+      "text_entry": "{{text}}"
+    }
+  },
+  "size": "{{size}}",
+  "from": "{{from}}"
+  },
+  "params": {
+    "text": "death",
+    "size": 2,
+    "from": 0
+  }
+}
+POST _scripts/my_template
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "match": {
+          "text_entry": "{{text}}"
+        }
+      },
+      "size": "{{size}}{{^size}}25{{/size}}",
+      "from": "{{page}}{{^page}}0{{/page}}"
+    }
+  }
+}
+GET _search/template
+{
+  "id": "my_template",
+  "params": {
+    "text": "death",
+    "size": 3
+  }
+}

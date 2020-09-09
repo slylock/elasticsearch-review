@@ -1,0 +1,295 @@
+"query": {
+    "bool": {
+        "must": [
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "bool": {
+                                "filter": {
+                                    "bool": {
+                                        "must": [
+                                            {
+                                                "term": {
+                                                    "cleancontentsource.raw": "people"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                "must": [
+                                    {
+                                        "bool": {
+                                            "must": [
+                                                {
+                                                    "bool": {
+                                                        "should": [
+                                                            {
+                                                                "multi_match": {
+                                                                    "query": {
+                                                                        {k1
+                                                                        }
+                                                                    },
+                                                                    "fields": [
+                                                                        "cleannames.shingle"
+                                                                    ],
+                                                                    "operator": "AND"
+                                                                }
+                                                            },
+                                                            {
+                                                                "multi_match": {
+                                                                    "query": {
+                                                                        {k1
+                                                                        }
+                                                                    },
+                                                                    "fields": [
+                                                                        "enterpriseid.raw"
+                                                                    ],
+                                                                    "operator": "AND"
+                                                                }
+                                                            },
+                                                            {
+                                                                "multi_match": {
+                                                                    "query": {
+                                                                        {k1
+                                                                        }
+                                                                    },
+                                                                    "fields": [
+                                                                        "workemail.email"
+                                                                    ],
+                                                                    "operator": "AND"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "boost": 100
+                            }
+                        },
+                        {
+                            "function_score": {
+                                "functions": [
+                                    {
+                                        "gauss": {
+                                            "cleandate": {
+                                                "offset": "365d",
+                                                "scale": "365d",
+                                                "decay": 0.95
+                                            }
+                                        }
+                                    }
+                                ],
+                                "query": {
+                                    "bool": {
+                                        "filter": {
+                                            "bool": {
+                                                "must": [
+                                                    {
+                                                        "term": {
+                                                            "cleanstatus": "active"
+                                                        }
+                                                    },
+                                                    {
+                                                        "bool": {
+                                                            "must_not": [
+                                                                {
+                                                                    "term": {
+                                                                        "cleancontentsource": "people"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "cleanapproved": "yes"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "must": [
+                                            {
+                                                "bool": {
+                                                    "should": [
+                                                        {
+                                                            "multi_match": {
+                                                                "query": {
+                                                                    {k1
+                                                                    }
+                                                                },
+                                                                "fields": [
+                                                                    "cleantitlesearch.english^10",
+                                                                    "cleandescriptionsearch.english",
+                                                                    "cleannames.shingle^5",
+                                                                    "cleanauthor^5",
+                                                                    "cleangr4.english"
+                                                                ],
+                                                                "type": "cross_fields",
+                                                                "operator": "AND"
+                                                            }
+                                                        },
+                                                        {
+                                                            "multi_match": {
+                                                                "query": {
+                                                                    {k1
+                                                                    }
+                                                                },
+                                                                "fields": [
+                                                                    "cleantitlesearch.synonym^8",
+                                                                    "cleandescriptionsearch.synonym"
+                                                                ],
+                                                                "analyzer": "synonym",
+                                                                "type": "cross_fields",
+                                                                "operator": "AND"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ],
+                                        "should": [
+                                            {
+                                                "bool": {
+                                                    "should": [
+                                                        {
+                                                            "bool": {
+                                                                "must": [
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "attachments._source.cleancountry": {
+                                                                                        {country
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "boost": 100
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "bool": {
+                                                                "must": [
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "cleancountry": {
+                                                                                        {country
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            "boost": 100
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "must_not": [
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "attachments._source.cleancountry": {
+                                                                                        {country
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "bool": {
+                                                                "should": [
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "cleancountry": "global"
+                                                                                }
+                                                                            },
+                                                                            "boost": 50
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "cleancountry": "all"
+                                                                                }
+                                                                            },
+                                                                            "boost": 50
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "must_not": [
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "attachments._source.cleancountry": {
+                                                                                        {country
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "constant_score": {
+                                                                            "query": {
+                                                                                "match": {
+                                                                                    "cleancountry": {
+                                                                                        {country
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "constant_score": {
+                                                    "query": {
+                                                        "bool": {
+                                                            "must": [
+                                                                {
+                                                                    "terms": {
+                                                                        "cleanlanguage.raw": {
+                                                                            {language
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    "boost": 200
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

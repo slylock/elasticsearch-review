@@ -1,0 +1,44 @@
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET _cat/indices
+GET bank/_search
+{
+  "query": {
+      "term": {
+        "gender.keyword": {
+          "value": "M"
+        }
+      }
+    }
+}
+
+
+
+GET accounts_female/_search
+
+POST bank/_update_by_query
+{
+  "query": {
+    "term": {
+        "gender.keyword": {
+          "value": "F"
+        }
+      }
+  },
+  "script": {
+    "lang": "painless",
+    "source": """
+      ctx._source.balance *= 1.03;
+      if (ctx._source.transactions == null ){
+        ctx._source.transactions = 1;
+      } else {
+        ctx._source.transactions++;
+      }
+    """ 
+  }
+}

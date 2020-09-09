@@ -1,0 +1,81 @@
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "extensions": {
+      "terms": {
+        "field": "extension.keyword",
+        "size": 10,
+        "order": {
+          "sum_bytes": "desc"
+        }
+      },
+      "aggs": {
+        "sum_bytes": {
+          "sum": {
+            "field": "bytes"
+          }
+        }
+      }
+    },
+    "total": {
+      "sum_bucket": {
+        "buckets_path": "extensions>sum_bytes"
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "per_hour": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "hour"
+      },
+      "aggs": {
+        "unique_clients": {
+          "cardinality": {
+            "field": "clientip.keyword"
+          }
+        }
+      }
+    },
+    "max": {
+      "max_bucket": {
+        "buckets_path": "per_hour>unique_clients"
+      }
+    }
+  }
+}
+GET logs-new/_search
+{
+  "size": 0,
+  "aggs": {
+    "extensions": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "calendar_interval": "hour"
+      },
+      "aggs": {
+        "sum_bytes": {
+          "sum": {
+            "field": "bytes"
+          }
+        },
+        "cumulative_sum": {
+          "cumulative_sum": {
+            "buckets_path": "sum_bytes"
+          }
+        },
+        "bytes_rate": {
+          "derivative": {
+            "buckets_path": "cumulative_sum",
+            "unit": "second"
+          }
+        }
+      }
+    }
+  }
+}

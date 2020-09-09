@@ -1,0 +1,121 @@
+GET _search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "wildcard": {
+            "lastname.keyword": {
+              "value": "*"
+            }
+          }
+        },
+        {
+          "wildcard": {
+            "firstname.keyword": {
+              "value": "*"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET _search/template
+{
+  "source": {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "wildcard": {
+              "lastname.keyword": {
+                "value": "{{last}}"
+              }
+            }
+          },
+          {
+            "wildcard": {
+              "firstname.keyword": {
+                "value": "{{first}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "size" : 20
+  },
+  "params": {
+    "first": "A*",
+    "last": "D*"
+  }
+}
+
+GET _search/template
+{
+  "source": {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "wildcard": {
+              "lastname.keyword": {
+                "value": "{{last}}"
+              }
+            }
+          },
+          {
+            "wildcard": {
+              "firstname.keyword": {
+                "value": "{{first}}{{^first}}*{{/first}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "size" : 20
+  },
+  "params": {
+    "last": "Duke"
+  }
+}
+
+POST _scripts/account_by_name
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "wildcard": {
+                "lastname.keyword": {
+                  "value": "{{last}}"
+                }
+              }
+            },
+            {
+              "wildcard": {
+                "firstname.keyword": {
+                  "value": "{{first}}{{^first}}*{{/first}}"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "size": 20
+    }
+  }
+}
+GET _search/template
+{
+  "id": "account_by_name",
+  "params": {
+    "last": "Duke"
+  }
+}
