@@ -1,0 +1,237 @@
+PUT logs-2018-10-01
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "warm"
+  }
+}
+PUT logs-2018-10-01/_doc/1
+{
+  "url": "https://linuxacademy.com/courses/elastic-certified-engineer",
+"responsecode": "200",
+"bytes": 16384,
+"clientip": "10.0.1.100",
+"geoipcoordinates": "32.9259,97.2531",
+"useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
+"method": "GET",
+"requesttime": 84,
+"body": "<body><h1>Elastic Certified Engineer</h1></body>",
+"referrername": "referred_to"
+}
+GET logs-2018-10-01
+DELETE logs-2018-10-01
+PUT logs-2018-10-01
+{
+  "aliases": {
+    "logs": {}
+  },
+  "mappings": {
+    "properties": {
+      "reference": {
+        "type": "join",
+        "relations": {
+          "referred_to": "referred_by"
+        }
+      },
+      "related_content ": {
+        "type": "nested"
+      },
+      "body": {
+        "type": "text",
+        "fields": {
+          "html": {
+            "type": "text",
+            "analyzer": "html"
+          }
+        }
+      },
+      "bytes": {
+        "type": "long"
+      },
+      "clientip": {
+        "type": "ip"
+      },
+      "geoip.coordinates": {
+        "type": "geo_point"
+      },
+      "method": {
+        "type": "keyword",
+        "ignore_above": 256
+      },
+      "requesttime": {
+        "type": "long"
+      },
+      "responsecode": {
+        "type": "integer"
+      },
+      "url": {
+        "type": "keyword",
+        "ignore_above": 256
+      },
+      "useragent": {
+        "type": "keyword",
+        "ignore_above": 256
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "html": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "char_filter": [
+            "html_strip"
+          ],
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    },
+    "index": {
+      "routing": {
+        "allocation": {
+          "require": {
+            "temp": "warm"
+          }
+        }
+      },
+      "number_of_shards": "1",
+      "number_of_replicas": "1"
+    }
+  }
+}
+PUT _template/logs_template
+{
+  "index_patterns": "logs-*",
+  "aliases": {
+    "logs": {}
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "strings-to-keyword": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      }
+    ],
+    "properties": {
+      "reference": {
+        "type": "join",
+        "relations": {
+          "referred_to": "referred_by"
+        }
+      },
+      "related_content ": {
+        "type": "nested"
+      },
+      "body": {
+        "type": "text",
+        "fields": {
+          "html": {
+            "type": "text",
+            "analyzer": "html"
+          }
+        }
+      },
+      "url": {
+        "type": "text",
+        "analyzer": "simple",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "useragent": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "bytes": {
+        "type": "long"
+      },
+      "clientip": {
+        "type": "ip"
+      },
+      "geoip.coordinates": {
+        "type": "geo_point"
+      },
+      "requesttime": {
+        "type": "long"
+      },
+      "responsecode": {
+        "type": "integer"
+      }
+    }
+  },
+  "settings": {
+    "index.routing.allocation.require.temp": "warm",
+    "analysis": {
+      "analyzer": {
+        "html": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "char_filter": [
+            "html_strip"
+          ],
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    },
+    "index": {
+      "routing": {
+        "allocation": {
+          "require": {
+            "temp": "warm"
+          }
+        }
+      },
+      "number_of_shards": "2",
+      "number_of_replicas": "1"
+    }
+  }
+}
+GET _template/logs_template
+DELETE _template/logs_template
+DELETE logs-2018-10-01
+PUT logs-2018-10-01
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "warm"
+  }
+}
+GET logs-2018-10-01
+GET logs-2018-10-01/_doc/1
+DELETE logs-2018-10-01/_doc/1
+PUT logs-2018-10-01/_doc/1
+{
+  "url": "https://linuxacademy.com/courses/elastic-certified-engineer",
+"responsecode": "200",
+"bytes": 16384,
+"clientip": "10.0.1.100",
+"geoip.coordinates": "32.9259,97.2531",
+"useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
+"method": "GET",
+"requesttime": 84,
+"body": "<body><h1>Elastic Certified Engineer</h1></body>",
+"reference": "referred_to"
+}
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster.routing.allocation.awareness.attributes": "zone",
+"cluster.routing.allocation.awareness.force.zone.values": "1,2"
+  }
+}

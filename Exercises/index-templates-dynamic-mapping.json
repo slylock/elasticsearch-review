@@ -1,0 +1,132 @@
+PUT customers/_doc/1
+{
+  "year_to_date": 1
+}
+DELETE customers
+PUT customers-1
+{
+  "aliases": {
+    "customers": {}
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "long_to_integer": {
+          "match_mapping_type": "long",
+          "mapping": {
+            "type": "integer"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "year_to_date": {
+        "type": "double"
+      }
+    }
+  }
+}
+GET customers-1
+DELETE _template/customers
+PUT _template/customers
+{
+  "index_patterns": [
+    "customers-*"
+  ],
+  "aliases": {
+    "customers": {}
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "long_to_integer": {
+          "match_mapping_type": "long",
+          "mapping": {
+            "type": "integer"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "year_to_date": {
+        "type": "double"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": "4",
+      "number_of_replicas": "3"
+    }
+  }
+}
+GET _template/customers
+PUT _template/partners
+{
+  "index_patterns": [
+    "partners-*"
+  ],
+  "aliases": {
+    "partners": {}
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "string_to_keyword": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "address": {
+        "type": "text"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": "4",
+      "number_of_replicas": "3"
+    }
+  }
+}
+PUT _template/leads
+{
+  "index_patterns": [
+    "leads-*"
+  ],
+  "aliases": {
+    "leads": {}
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "string_to_keyword": {
+          "match_mapping_type": "string",
+          "match": "lead_*",
+          "unmatch": "*_text",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "address": {
+        "type": "text"
+      },
+      "estimate": {
+        "type": "double"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": "4",
+      "number_of_replicas": "3"
+    }
+  }
+}

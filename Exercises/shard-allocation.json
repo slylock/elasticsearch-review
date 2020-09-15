@@ -88,3 +88,25 @@ PUT _cluster/settings
     "cluster.routing.allocation.awareness.force.zone.values" : "1,2"
   }
 }
+
+PUT logs-fresh
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "hot"
+  }
+}
+
+DELETE logs-2020-01-05
+PUT logs-2020-01-05
+{
+  "settings": {
+    "index.routing.allocation.require.temp": "warm",
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "aliases": {
+    "logs": {},
+    "this_week": {}
+  }
+
+}

@@ -1,0 +1,77 @@
+GET bank/_search
+
+# How many unique employers are there among our account holders?
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "employer_count": {
+      "cardinality": {
+        "field": "employer.keyword"
+      }
+    }
+  }
+}
+
+# How many male and female account holders do we have in each state (listed in descending order by the number of accounts)?
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "accounts_by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 80,
+        "order": {
+          "_count": "desc"
+        }
+      },
+      "aggs": {
+        "gender": {
+          "terms": {
+            "field": "gender.keyword",
+            "size": 10
+          }
+        }
+      }
+    }
+  }
+}
+
+# What is the total balance of the top 5 states whose account holders are at least age 30 (listed in descending order by the total balance)?
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": {
+        "range": {
+          "age": {
+            "gte": 30
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "accounts_by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "size": 5,
+        "order": {
+          "total_balance": "desc"
+        }
+      },
+      "aggs": {
+        "total_balance": {
+          "sum": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
