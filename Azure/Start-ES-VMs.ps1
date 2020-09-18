@@ -27,7 +27,7 @@ while ($waiting) {
     foreach ($vm in $vms) {
         if ($vm.ProvisioningState -ne "Succeeded") {$waiting = $true}
     }
-    Start-Sleep -Seconds 10
+    Start-Sleep -Seconds 20
 }
 
 if ($RebootVMs) {
