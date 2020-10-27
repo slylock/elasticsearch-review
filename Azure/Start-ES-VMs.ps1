@@ -1,28 +1,45 @@
+<#
+.Synopsis
+   Start VMs in Azure
+.DESCRIPTION
+   Start VMs in Azure
+.EXAMPLE
+	.\Start-ES-VMs.ps1 -Credential $cred -Pattern 'Matt' -Government
+#>
+
 Param ( `
-    [Object] $Cred = $null,`
-    [Switch] $RebootVMs = $true `
+    [Object] $Credential = $null,`
+	$UserName = "slylock2@mac.com", `
+	$Pattern = "Matt-ES-4", `
+    [Switch] $Government = $false, `
+    [Switch] $RebootVMs = $false `
 )
 if ((Get-InstalledModule -Name Az -ErrorAction Ignore)  -eq $null) {
     throw "Az modeule required"
     #Install-Module -Name Az -AllowClobber
 }
 
-if ($Cred -eq $null) {
-    try {
-        $Cred = Get-Credential -UserName "slylock2@mac.com" -Message "Mxxxxxx1" -ErrorAction Ignore
+if ($Credential -eq $null) {
+    try { $Credential = Get-Credential -UserName $UserName -Message "Mxxxxxx1" -ErrorAction Ignore
     } catch {
-        $Cred = $null
+        $Credential = $null
     }
 }
-if ($Cred -ne $null) {Connect-AzAccount -Credential $Cred}
+if ($Credential -ne $null) {
+	if ($Government) {
+		Connect-AzAccount -Credential $Credential -Environment AzureUSGovernment
+	} else {
+		Connect-AzAccount -Credential $Credential
+	}
+}
 
-$vms = Get-AzVM  | where {$_.Name -match "Matt-ES"}
+$vms = Get-AzVM  | where {$_.Name -match $Pattern}
 $vms | Start-AzVM -NoWait
 
 $waiting = $true
 while ($waiting) {
     $waiting = $false
-    $vms = Get-AzVM  | where {$_.Name -match "Matt-ES"}
+    $vms = Get-AzVM  | where {$_.Name -match $Pattern}
     $vms | Format-Table
     foreach ($vm in $vms) {
         if ($vm.ProvisioningState -ne "Succeeded") {$waiting = $true}

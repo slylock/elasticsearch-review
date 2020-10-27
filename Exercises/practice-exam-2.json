@@ -1,0 +1,418 @@
+GET bank/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+GET _cat/nodes
+GET bank
+
+GET bank/_search
+{
+  "query": {
+    "term": {
+      "account_number": 67
+    }
+  }
+}
+GET bank/_search
+{
+"query": {
+  "term": {
+    "lastname.keyword": {
+      "value": "Alonso"
+    }
+  }
+}  
+}
+
+POST bank/_delete_by_query
+{
+  "query": {
+    "terms": {
+      "account_number": [
+        "5",
+        "27",
+        "819"
+      ]
+    }
+  }
+}
+
+POST bank/_update_by_query
+{
+  "script": {
+    "source": "ctx._source.lastname = 'Alonso'",
+    "lang": "painless"
+  },
+  "query": {
+    "term": {
+      "account_number": 67
+    }
+  }
+}
+
+POST bank/_update/67
+{
+  "doc": {
+    "lastname" : "Ball"
+  }
+}
+
+PUT bank/_doc/1000
+{
+  "account_number": 1000,
+  "balance": 35550,
+  "firstname": "Stosh",
+  "lastname": "Pearson",
+  "age": 45,
+  "gender": "M",
+  "address": "125 Bear Creek Pkwy",
+  "employer": "Linux Academy",
+  "email": "spearon@linuxacademy.com",
+  "city": "Keller",
+  "state": "TX"
+}
+GET bank/_doc/1000
+
+GET shakespeare/_search
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "wildcard": {
+            "line_number": {
+              "value": "*"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+POST shakespeare/_update_by_query
+{
+  "script": {
+    "lang": "painless",
+    "source": """
+      if (ctx._source.line_number == "") {
+        ctx.op = "delete"
+      }
+    """
+  }
+}
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET shakespeare/_search
+{
+  "size": 0,
+  "aggs": {
+    "line-numbers": {
+      "terms": {
+        "field": "line_number.keyword",
+        "size": 1,
+        "order": {
+          "_term": "asc"
+        }
+      }
+    }
+  }
+}
+
+GET _cat/indices?v
+GET _cat/nodes
+
+POST shakespeare/_update_by_query
+{
+  "script": {
+    "lang": "painless",
+    "source": """
+      if (ctx._source.line_number == "") {
+        ctx.op = "delete"
+      }
+    """
+  }
+}
+
+GET bank
+PUT bank/_settings
+{
+        "index" : {
+        "routing" : {
+          "allocation" : {
+            "require" : {
+              "_name" : null
+            }
+          }
+        }
+      }
+}
+GET shakespeare
+PUT shakespeare/_settings
+{
+  "index": {
+    "number_of_replicas": "1"
+  }
+}
+PUT shakespeare/_mapping
+{
+  "properties" : {
+        "line_id" : {
+          "type" : "integer"
+        },
+        "line_number" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "play_name" : {
+          "type" : "keyword"
+        },
+        "speaker" : {
+          "type" : "keyword"
+        },
+        "speech_number" : {
+          "type" : "integer"
+        },
+        "text_entry" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            },
+            "english" : {
+              "type" : "text",
+              "analyzer" : "english"
+            }
+          }
+        },
+        "type" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        }
+      }
+}
+POST _reindex
+{
+  "source": {
+    "index": "shakespeare"
+  },
+  "dest": {
+    "index": "shakespeare2"
+  }
+}
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry.english": "death"
+    }
+  }
+}
+POST shakespeare/_update_by_query
+{
+}
+
+GET logs
+DELETE logs_new
+PUT logs_new
+{
+  "settings": {
+    "index": {
+      "number_of_shards": "2",
+      "number_of_replicas": "1"
+    }
+  }
+}
+
+
+PUT _ingest/pipeline/fix_logs
+{
+  "description": "fix logs",
+  "processors": [
+    {
+      "remove": {
+        "field": "@message"
+      }
+    },
+    {
+      "split": {
+        "field": "spaces",
+        "separator": "\\s+"
+      }
+    },
+    {
+      "script": {
+        "lang": "painless",
+        "source": "ctx.relatedContent_count = ctx.relatedContent.length"
+      }
+    },
+    {
+      "uppercase": {
+        "field": "extension"
+      }
+    }
+  ]
+}
+POST _reindex
+{
+  "source": {
+    "index": "logs"
+  },
+  "dest": {
+    "index": "logs_new",
+    "pipeline": "fix_logs"
+  }
+}
+GET logs_new/_search
+
+
+GET bank/_search
+GET bank/_search
+{
+  "size": 50, 
+  "from": 0, 
+  "sort": [
+    {
+      "age": {
+        "order": "asc"
+      }
+    },
+    {
+      "balance": {
+        "order": "desc"
+      }
+    },
+    {
+      "lastname.keyword": {
+        "order": "asc"
+      }
+    }
+  ], 
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": {
+              "value": "F"
+            }
+          }
+        },
+        {
+          "range": {
+            "balance": {
+              "gt": 10000
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "terms": {
+            "state.keyword": [
+              "PA", "VA",  "IL"
+            ]
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "age": {
+            "gte": 18,
+            "lte": 35
+          }
+        }
+      }
+    }
+  }
+}
+
+GET shakespeare/_search
+{
+  "size": 20, 
+  "from": 0, 
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "text_entry.english": {
+              "value": "life"
+            }
+          }
+        },
+        {
+          "term": {
+            "text_entry.english": {
+              "value": "love"
+            }
+          }
+        },
+        {
+          "term": {
+            "text_entry.english": {
+              "value": "death"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 2
+    }
+  },
+  "highlight": {
+    "fields": {
+      "text_entry.english": {}
+    },
+    "pre_tags": ["<b>"],
+    "post_tags": ["<b>"]
+  }
+}
+
+GET logs/_search
+GET logs/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "fuzzy": {
+            "relatedContent.twitter:description": {
+              "value": "never",
+              "fuzziness": "2"
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "relatedContent.twitter:title": "Golden State"
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "relatedContent.twitter:description": {}, "relatedContent.twitter:title": {}
+    }
+  }
+}
