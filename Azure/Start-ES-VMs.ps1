@@ -4,13 +4,15 @@
 .DESCRIPTION
    Start VMs in Azure
 .EXAMPLE
-	.\Start-ES-VMs.ps1 -Credential $cred -Pattern 'Matt' -Government
+    .\Start-ES-VMs.ps1 -Credential $cred -Pattern 'Matt' -Government
+    .\Start-ES-VMs.ps1 -UserName "slylock2@mac.com" -Pattern 'Matt-ES-4' -LoginMessage "Mxxxxxx1"
 #>
 
 Param ( `
     [Object] $Credential = $null,`
-	$UserName = "slylock2@mac.com", `
-	$Pattern = "Matt-ES-4", `
+	$UserName = "", `
+    $Pattern = "", `
+    $LoginMessage = "Enter credentials for Azure", `
     [Switch] $Government = $false, `
     [Switch] $RebootVMs = $false `
 )
@@ -19,8 +21,12 @@ if ((Get-InstalledModule -Name Az -ErrorAction Ignore)  -eq $null) {
     #Install-Module -Name Az -AllowClobber
 }
 
+if ($Pattern -eq "") {
+    throw "Pattern for VM Names required"
+}
+
 if ($Credential -eq $null) {
-    try { $Credential = Get-Credential -UserName $UserName -Message "Mxxxxxx1" -ErrorAction Ignore
+    try { $Credential = Get-Credential -UserName $UserName -Message $LoginMessage -ErrorAction Ignore
     } catch {
         $Credential = $null
     }
